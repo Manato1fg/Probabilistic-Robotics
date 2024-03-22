@@ -9,7 +9,7 @@ from .landmark import LandMark
 
 class Map(DrawableObject):
     def __init__(self):
-        self.landmarks = []
+        self.landmarks: List[LandMark] = []
 
     def append_landmark(self, landmark: LandMark) -> None:
         self.landmarks.append(landmark)

@@ -1,14 +1,6 @@
-from dataclasses import dataclass
 from typing import List
 
 from matplotlib import pyplot as plt
-
-
-@dataclass
-class Pose:
-    x: float
-    y: float
-    theta: float
 
 
 class DrawableObject:
