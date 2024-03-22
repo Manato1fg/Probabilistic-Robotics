@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 import matplotlib.pyplot as plt
 
@@ -10,7 +10,7 @@ class Agent:
         self.nu = nu
         self.w = w
 
-    def decision(self, observation: List["Observation"] = None):
+    def decision(self, observation: List["Observation"] = None) -> Tuple[float, float]:
         # TODO: Implement here
         return self.nu, self.w
 
