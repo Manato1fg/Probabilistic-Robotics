@@ -22,7 +22,10 @@ class Pose:
     y: float
     theta: float
 
-    def __add__(self, p: Union["Pose", Tuple[float, float, float], np.ndarray]):
+    def __add__(
+        self,
+        p: Union["Pose", Tuple[float, float, float], np.ndarray]
+    ):
         if isinstance(p, Pose):
             return Pose(self.x + p.x, self.y + p.y, self.theta + p.theta)
         else:
@@ -45,7 +48,14 @@ class Pose:
 
 
 class IdealRobot(DrawableObject):
-    def __init__(self, pose: "Pose", agent: "Agent" = None, sensor: "IdealCamera" = None, color: str = "red", r: float = 0.2):
+    def __init__(
+        self,
+        pose: "Pose",
+        agent: "Agent" = None,
+        sensor: "IdealCamera" = None,
+        color: str = "red",
+        r: float = 0.2
+    ):
         self.pose = pose
         self.color = color
         self.r = r
@@ -62,8 +72,14 @@ class IdealRobot(DrawableObject):
                            fill=False, color=self.color)
         elems.append(ax.add_patch(c))
         # 軌跡の描画
-        elems.extend(ax.plot(
-            [e[0] for e in self.tragectory], [e[1] for e in self.tragectory], linewidth=0.5, color="black"))
+        elems.extend(
+            ax.plot(
+                [e[0] for e in self.tragectory],
+                [e[1] for e in self.tragectory],
+                linewidth=0.5,
+                color="black"
+            )
+        )
 
         if self.sensor and len(self.tragectory) > 1:
             self.sensor.draw(ax, elems, self.tragectory[-2])
@@ -81,11 +97,21 @@ class IdealRobot(DrawableObject):
         self.tragectory.append(self.pose)
 
     @classmethod
-    def state_transition(cls, nu: float, w: float, t: float, pose: "Pose") -> "Pose":
+    def state_transition(
+        cls,
+        nu: float,
+        w: float,
+        t: float,
+        pose: "Pose"
+    ) -> "Pose":
         t0 = pose.theta
         phase = t0 + w * t
         if math.fabs(w) < 1e-10:
-            return Pose(pose.x + nu * math.cos(t0) * t, pose.y + nu * math.sin(t0) * t, t0)
+            return Pose(
+                pose.x + nu * math.cos(t0) * t,
+                pose.y + nu * math.sin(t0) * t,
+                t0
+            )
         else:
             return Pose(
                 pose.x - nu / w * math.sin(t0) + nu / w * math.sin(phase),
@@ -129,8 +155,13 @@ class Robot(IdealRobot):
         self.kidnap_pdf = expon(scale=expected_kidnap_time)
         self.time_until_kidnap = self.kidnap_pdf.rvs()
         # 誘拐される範囲を一葉分布からサンプリング
-        self.kidnap_dist = uniform(loc=(kidnap_range_x[0], kidnap_range_y[0]), scale=(
-            kidnap_range_x[1] - kidnap_range_x[0], kidnap_range_y[1] - kidnap_range_y[0]))
+        self.kidnap_dist = uniform(
+            loc=(kidnap_range_x[0], kidnap_range_y[0]),
+            scale=(
+                kidnap_range_x[1] - kidnap_range_x[0],
+                kidnap_range_y[1] - kidnap_range_y[0]
+            )
+        )
 
     def kidnap(self, pose: "Pose", time_interval: float) -> "Pose":
         self.time_until_kidnap -= time_interval
@@ -140,7 +171,12 @@ class Robot(IdealRobot):
         else:
             return pose
 
-    def stuck(self, nu: float, omega: float, time_interval: float) -> Tuple[float, float]:
+    def stuck(
+        self,
+        nu: float,
+        omega: float,
+        time_interval: float
+    ) -> Tuple[float, float]:
         if self.is_stucking:
             self.time_until_escape -= time_interval
             if self.time_until_escape <= 0.0:
@@ -157,7 +193,13 @@ class Robot(IdealRobot):
     def bias(self, nu: float, omega: float) -> Tuple[float, float]:
         return nu * self.bias_rate_nu, omega * self.bias_rate_omega
 
-    def noise(self, pose: "Pose", nu: float, omega: float, time_interval: float) -> "Pose":
+    def noise(
+        self,
+        pose: "Pose",
+        nu: float,
+        omega: float,
+        time_interval: float
+    ) -> "Pose":
         self.distance_until_noise -= abs(nu) * time_interval + \
             self.r * omega * time_interval  # 車輪の分も考慮
         if self.distance_until_noise <= 0.0:

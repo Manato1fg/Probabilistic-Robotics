@@ -10,7 +10,10 @@ class Agent:
         self.nu = nu
         self.w = w
 
-    def decision(self, observation: List["Observation"] = None) -> Tuple[float, float]:
+    def decision(
+        self,
+        observation: List["Observation"] = None
+    ) -> Tuple[float, float]:
         # TODO: Implement here
         return self.nu, self.w
 

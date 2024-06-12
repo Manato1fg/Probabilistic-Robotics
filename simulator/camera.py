@@ -1,11 +1,10 @@
+import random
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import norm, uniform
-
-import random
 
 if TYPE_CHECKING:
     from .map import Map
@@ -53,7 +52,8 @@ class IdealCamera:
         self.lastdata = observed
         return observed
 
-    def visible(self, obs: Observation) -> bool:
+    def visible(
+            self, obs: Observation) -> bool:
         if obs is None:
             return False
         phi = obs.direction
@@ -65,7 +65,12 @@ class IdealCamera:
             return False
         return True
 
-    def draw(self, ax: plt.Axes, elems: List[plt.Artist], cam_pose: "Pose") -> None:
+    def draw(
+        self,
+        ax: plt.Axes,
+        elems: List[plt.Artist],
+        cam_pose: "Pose"
+    ) -> None:
         for ld in self.lastdata:
             x, y, theta = cam_pose
             distance, direction = ld[0], ld[1]
@@ -74,7 +79,11 @@ class IdealCamera:
             elems += ax.plot([x, lx], [y, ly], color="pink")  # 観測線
 
     @classmethod
-    def relative_polar_pos(cls, cam_pose: "Pose", obj_pos: np.ndarray) -> np.ndarray:
+    def relative_polar_pos(
+        cls,
+        cam_pose: "Pose",
+        obj_pos: np.ndarray
+    ) -> np.ndarray:
         distance = (obj_pos[0] - cam_pose[0]) ** 2 + \
             (obj_pos[1] - cam_pose[1]) ** 2
         distance = np.sqrt(distance)
